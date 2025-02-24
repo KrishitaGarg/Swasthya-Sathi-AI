@@ -258,11 +258,11 @@ def create_pdf_report(patient_info, service_info, specimens, theranostic_report,
         canvas.restoreState() # Restore the canvas state
 
     format_details = {
-        "Format 1": {"color": colors.lightblue, "header": "SWAYAM IMAGING CENTER"},
-        "Format 2": {"color": colors.lightgreen, "header": "SWAYAM IMAGING CENTER"},
-        "Format 3": {"color": colors.lightyellow, "header": "Medical Imaging Report"},
-        "Format 4": {"color": colors.lightpink, "header": "IMAGING DIAGNOSTIC CENTER"},
-        "Format 5": {"color": colors.lightgrey, "header": "RADIOLOGY REPORT"}
+        "Format 1": {"color": colors.lightblue, "header": "Swasthya Sathi AI Report"},
+        "Format 2": {"color": colors.lightgreen, "header": "Swasthya Sathi AI Report"},
+        "Format 3": {"color": colors.lightyellow, "header": "Swasthya Sathi AI Report"},
+        "Format 4": {"color": colors.lightpink, "header": "Swasthya Sathi AI Report"},
+        "Format 5": {"color": colors.lightgrey, "header": "Swasthya Sathi AI Report"}
     }
 
     # Add the elements to the PDF
