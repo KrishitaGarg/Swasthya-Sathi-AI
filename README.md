@@ -94,19 +94,19 @@ GOOGLE_API_KEY=your_google_api_key
 
 ## Additional Features 🛠️
 
-✅ **Multiple Report Formats** – Choose different designs and colors for downloadable reports.
-✅ **Customizable Prompts** – Modify AI prompts for personalized outputs.
-✅ **Secure Data Handling** – All data remains confidential and secure.
-✅ **User-Friendly UI** – Simple and intuitive interface for medical professionals.
+✅ **Multiple Report Formats** – Choose different designs and colors for downloadable reports.  
+✅ **Customizable Prompts** – Modify AI prompts for personalized outputs.  
+✅ **Secure Data Handling** – All data remains confidential and secure.  
+✅ **User-Friendly UI** – Simple and intuitive interface for medical professionals.  
 
 ---
 
 ## Future Enhancements 🚀
 
 🔹 **Deep Learning-Based Image Diagnosis** – Integrate advanced CNN models for **more accurate** and **automated** medical image analysis.  
-🔹 **Voice-Based Medical Assistance** – Implement a **voice-enabled AI assistant** for hands-free interaction, making healthcare guidance more accessible.
+🔹 **Voice-Based Medical Assistance** – Implement a **voice-enabled AI assistant** for hands-free interaction, making healthcare guidance more accessible.  
 🔹 **Multi-Language Support** – Expand accessibility by **supporting multiple languages** for medical transcription and diagnostics.  
-🔹 **Real-Time Data Integration** – Enable **real-time patient data processing** by integrating with **wearable devices** and **hospital databases**. 
+🔹 **Real-Time Data Integration** – Enable **real-time patient data processing** by integrating with **wearable devices** and **hospital databases**.  
 🔹 **Electronic Health Record (EHR) Compatibility** – Seamlessly integrate with **EHR systems** for **efficient patient data management**.  
 🔹 **Self-Learning AI Model** – Enhance AI capabilities by **continuously learning** from user inputs and **improving accuracy over time**.  
 
