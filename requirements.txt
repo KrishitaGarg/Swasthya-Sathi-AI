@@ -1,0 +1,14 @@
+streamlit
+streamlit-option-menu
+google-generativeai
+Pillow
+python-dotenv
+requests
+beautifulsoup4
+feedparser
+matplotlib
+reportlab
+pandas
+numpy
+scikit-learn
+joblib
