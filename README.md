@@ -2,7 +2,9 @@
 
 Welcome to **Swasthya Sathi AI**, a cutting-edge AI-powered medical assistant designed to streamline medical diagnostics, transcription, pathology analysis, and more. This project aims to enhance the efficiency of healthcare professionals by leveraging artificial intelligence for accurate and fast medical assessments.
 
-<img src="assets/icon.jpeg" alt="Swasthya Sathi AI" width="200" height="200">
+<p align="center">
+  <img src="assets/icon.jpeg" alt="Swasthya Sathi AI" width="250" height="250" >
+</p>
 
 ## Key Features 🚀
 Swasthya Sathi AI consists of multiple features, each addressing a key aspect of medical diagnostics:
