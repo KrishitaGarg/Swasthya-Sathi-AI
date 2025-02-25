@@ -11,16 +11,17 @@ from bs4 import BeautifulSoup
 import feedparser
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import letter, inch
 from reportlab.lib import colors
 from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, Spacer
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 import base64
 import numpy as np
 import joblib
+import re
 
 # Load environment variables
 load_dotenv()
@@ -287,75 +288,110 @@ def create_pathology_report(patient_info, service_info, specimens, theranostic_r
     return buf # Return the buffer
 
 # Function to create a PDF report
+def convert_markdown_to_html(text):
+    """Convert basic Markdown to HTML for better PDF rendering."""
+    text = re.sub(r"\*\*(.*?)\*\*", r"<b>\1</b>", text)  # Bold
+    text = re.sub(r"\*(.*?)\*", r"<i>\1</i>", text)  # Italics
+    text = re.sub(r"(?m)^- (.*?)$", r"• \1", text)  # Bullet points
+    text = re.sub(r"\n", r"<br/>", text)  # Newlines
+    return text
+
 def create_pdf_report(patient_info, service_info, specimens, theranostic_report, diagnosis, detailed_diagnosis, image_buffer, report_format):
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
 
-    # Set styles and register a custom font
-    pdfmetrics.registerFont(TTFont('Arial', 'fonts/ARIAL.TTF')) # Register the Arial font
-    styles = getSampleStyleSheet() # Get the default sample style sheet
-    # Define custom styles
-    styleN = ParagraphStyle('Normal', fontName='Arial', fontSize=10, leading=12)
-    styleH = ParagraphStyle('Heading1', fontName='Arial', fontSize=20, leading=20, alignment=1, spaceAfter=12, underline=True)
-    styleH2 = ParagraphStyle('Heading2', fontName='Arial', fontSize=14, leading=14, spaceAfter=8)
+    # Register Arial font
+    pdfmetrics.registerFont(TTFont('Arial', 'fonts/ARIAL.TTF'))
 
-    # Different report formats with different background colors
-    def add_background_and_border(canvas, doc, background_color):
-        canvas.saveState() # Save the canvas state
+    # Define styles
+    styles = getSampleStyleSheet()
+    styleN = ParagraphStyle('Normal', fontName='Arial', fontSize=10, leading=14)
+    styleH = ParagraphStyle('Heading1', fontName='Arial', fontSize=16, leading=20, alignment=1, spaceAfter=12, underline=True)
+    styleH2 = ParagraphStyle('Heading2', fontName='Arial', fontSize=14, leading=16, spaceAfter=8, underline=True)
+
+    # Header format
+    format_details = {
+        "Format 1": {"color": colors.black, "header": "Swasthya Sathi AI Medical Report"}
+    }
+    format_detail = format_details.get(report_format, format_details["Format 1"])
+
+    # Logo and header layout using table
+    try:
+        logo_path = "assets/icon.jpeg"
+        logo = Image(logo_path, width=1.2 * inch, height=1.2 * inch)
+    except Exception:
+        logo = Paragraph("<b>Logo Not Found</b>", styleN)
+
+    header_table = Table(
+        [[Paragraph(f"<b>{format_detail['header']}</b>", styleH), logo]],
+        colWidths=[380, 120]  # Adjusted for better right alignment
+    )
+    header_table.setStyle(TableStyle([
+        ('ALIGN', (0, 0), (0, 0), 'LEFT'),   # Aligns header text to the left
+        ('ALIGN', (1, 0), (1, 0), 'RIGHT'),  # Aligns logo to the right
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+    ]))
+    elements.append(header_table)
+    elements.append(Spacer(1, 12))
+
+    # Patient Info Table
+    table_style = TableStyle([
+        ('FONTNAME', (0, 0), (-1, -1), 'Arial'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('LEFTPADDING', (0, 0), (-1, -1), 50),  # Shift table right
+    ])
+
+    patient_table = Table([
+        [Paragraph("<b>Patient Information:</b>", styleN), patient_info],
+        [Paragraph("<b>Observation:</b>", styleN), service_info],
+        [Paragraph("<b>Inferences:</b>", styleN), specimens]
+    ], colWidths=[160, 400])
+
+    patient_table.setStyle(table_style)
+    elements.append(patient_table)
+    elements.append(Spacer(1, 12))
+
+    # Diagnosis Section
+    elements.append(Paragraph("<b>DIAGNOSIS</b>", styleH2))
+    elements.append(Paragraph(convert_markdown_to_html(diagnosis) if diagnosis else "No significant findings.", styleN))
+    elements.append(Spacer(1, 12))
+
+    # Conclusion Section
+    elements.append(Paragraph("<b>CONCLUSION</b>", styleH2))
+    elements.append(Paragraph(convert_markdown_to_html(theranostic_report), styleN))
+    elements.append(Spacer(1, 12))
+
+    # X-Ray Image Section
+    elements.append(Paragraph("<b>X-Ray Image:</b>", styleH2))
+    elements.append(Image(image_buffer, width=5 * inch, height=3.5 * inch))
+    elements.append(Spacer(1, 12))
+
+    # Advice Section
+    elements.append(Paragraph("<b>ADVICE</b>", styleH2))
+    elements.append(Paragraph("<i>Clinical correlation recommended.</i>", styleN))
+
+    # Custom Page Layout (White Background with Black Border)
+    def add_background_and_border(canvas, doc):
         margin = 36
-        canvas.setFillColor(background_color)
+        canvas.saveState()
+        canvas.setFillColor(colors.white)
         canvas.rect(margin, margin, doc.pagesize[0] - 2 * margin, doc.pagesize[1] - 2 * margin, fill=1)
         canvas.setStrokeColor(colors.black)
         canvas.setLineWidth(2)
         canvas.rect(margin, margin, doc.pagesize[0] - 2 * margin, doc.pagesize[1] - 2 * margin)
-        canvas.restoreState() # Restore the canvas state
+        canvas.restoreState()
 
-    format_details = {
-        "Format 1": {"color": colors.lightblue, "header": "Swasthya Sathi AI Report"},
-        "Format 2": {"color": colors.lightgreen, "header": "Swasthya Sathi AI Report"},
-        "Format 3": {"color": colors.lightyellow, "header": "Swasthya Sathi AI Report"},
-        "Format 4": {"color": colors.lightpink, "header": "Swasthya Sathi AI Report"},
-        "Format 5": {"color": colors.lightgrey, "header": "Swasthya Sathi AI Report"}
-    }
+    # Build PDF
+    doc.build(elements, onFirstPage=add_background_and_border, onLaterPages=add_background_and_border)
 
-    # Add the elements to the PDF
-    format_detail = format_details[report_format]
-    elements.append(Paragraph(format_detail["header"], styleH))
-    elements.append(Spacer(1, 12))
-    elements.extend([
-        Paragraph(f"Patient Information: {patient_info}", styleN),
-        Paragraph(f"Observation: {service_info}", styleN),
-        Paragraph(f"Inferences: {specimens}", styleN),
-        Spacer(1, 12),
-        Paragraph("DIAGNOSIS", styleH2),
-        Paragraph(detailed_diagnosis, styleN),
-        Spacer(1, 12),
-        Paragraph("Conclusion:", styleH2),
-        Paragraph(theranostic_report, styleN),
-        Spacer(1, 12),
-        Paragraph("X-Ray Image:", styleH2),
-        Image(image_buffer, width=5 * inch, height=3.5 * inch),
-        Spacer(1, 12),
-        Paragraph("IMPRESSION", styleH2),
-        Paragraph(diagnosis, styleN),
-        Spacer(1, 12),
-        Paragraph("ADVICE", styleH2),
-        Paragraph("Clinical correlation.", styleN),
-        Spacer(1, 12),
-        Paragraph("Radiologic Technologists: MSC, PGDM", styleN),
-        Paragraph("Dr. Payal Shah (MD, Radiologist)", styleN),
-        Paragraph("Dr. Vimal Shah (MD, Radiologist)", styleN)
-    ])
+    buffer.seek(0)
+    return buffer
 
-    # Build the PDF
-    doc.build(elements, 
-              onFirstPage=lambda canvas, 
-              doc: add_background_and_border(canvas, doc, format_detail["color"]), 
-              onLaterPages=lambda canvas, 
-              doc: add_background_and_border(canvas, doc, format_detail["color"]))
-    buffer.seek(0) # Reset the buffer position to the start
-    return buffer # Return the PDF buffer
+
 
 # Function to display common instructions
 def display_instructions(page):
@@ -468,10 +504,6 @@ def medical_imaging_diagnostics():
 
     regenerate_button = st.button("Regenerate Analysis") # Regenerate the analysis
 
-    # Report format
-    st.subheader("Report Format")
-    report_format = st.selectbox("Choose Report Format:", ["Format 1", "Format 2", "Format 3", "Format 4", "Format 5"])
-    
     # Display uploaded image and generated analysis in two columns
     if uploaded_files:
         for uploaded_file in uploaded_files:
@@ -500,7 +532,7 @@ def medical_imaging_diagnostics():
                             img_buffer.seek(0) # Reset the buffer position to the start
 
                             # Generate PDF report
-                            pdf_buffer = create_pdf_report("Yashvi M. Patel", 21, "Female", diagnosis, detailed_diagnosis, "", img_buffer, report_format)
+                            pdf_buffer = create_pdf_report("-", "-", "-", diagnosis, detailed_diagnosis, "", img_buffer, "Format 1")
                             st.download_button(
                                 label="Download Report",
                                 data=pdf_buffer,
