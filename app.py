@@ -45,72 +45,119 @@ st.markdown(
     """
     <style>
     body {
-        background-color: #eae7dc;
-        background-size: 1200px 800px;
-        background-position: center;
+        background-color: #f4f1ea;
         font-family: 'Arial', sans-serif;
     }
     .stApp {
-        padding: 15px;
-        border-radius: 5px;
-        background-color: #eae7dc;
-        background-position: center;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #f4f1ea;
     }
     .stButton>button {
         background-color: #4a2618;
         color: white;
         border: none;
-        padding: 10px 20px;
+        padding: 6px 24px;
         font-size: 16px;
-        border-radius: 5px;
+        font-weight: bold;
+        border-radius: 8px;
+        transition: background 0.3s ease, transform 0.2s ease;
     }
     .stButton>button:hover {
-        background-color: #d1e8e2
-        color: #5c2018;
+        background-color: #8b5e34;
+        color: white;
+        transform: scale(1.05);
     }
     .stTextInput>div>div>input {
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        padding: 10px;
-        font-size: 18px;
+        border-radius: 8px;
+        border: 2px solid #8b5e34;
+        padding: 12px;
+        font-size: 16px;
+        width: 100%;
+        text-align: center;
     }
     .stTextInput>div {
         display: flex;
         justify-content: center;
-        margin-top: 80px;
+        margin-top: 50px;
     }
     .stSidebar > div {
-        background-color: rgba(255, 255, 255, 0.9);
-        padding: 15px;
-        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.95);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
     }
     .sidebar-emoji {
         text-align: center;
+        margin-bottom: 15px;
     }
     .sidebar-emoji img {
-        width: 2in;
-        height: 2in;
+        width: 80px;
+        height: 80px;
     }
     .chat-message {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: bold;
         color: white;
+        background-color: #4a2618;
+        padding: 10px;
+        border-radius: 8px;
     }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# Custom CSS for the sidebar image (logo)
-st.sidebar.markdown(
-    """
-    <style>
     .sidebar-image {
         display: block;
         margin-left: auto;
         margin-right: auto;
         width: 80%;
     }
+    .stFileUploader label {
+        background-color: #a48173 !important;
+        color: black !important;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+    .stFileUploader label:hover {
+        background-color: #8b5e34 !important;
+        color: white !important;
+        transform: scale(1.005);
+    }
+    .stTextArea label {
+        background-color: #a48173 !important;
+        color: black !important;
+        font-size: 16px !important;
+        padding: 8px 15px !important;
+        border-radius: 8px !important;
+        display: inline-block;
+        transition: all 0.3s ease;
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+    .stTextArea label:hover {
+        background-color: #8b5e34 !important;
+        transform: scale(1.05);
+        color: white !important;
+    }
+    div.stForm div.stFormSubmitButton > button {
+        background-color: #4a2618 !important;
+        color: white !important;
+        font-size: 18px !important;
+        font-weight: bold !important;
+        padding: 6px 24px !important;
+        border-radius: 8px !important;
+        border: none !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease-in-out;
+    }
+    div.stForm div.stFormSubmitButton > button:hover {
+        background-color: #8b5e34 !important;
+        color: white !important;
+        transform: scale(1.05);
+    }    
     </style>
     """,
     unsafe_allow_html=True
@@ -364,7 +411,6 @@ def display_instructions(page):
     # Display the instructions for the selected page
     st.sidebar.markdown(instructions.get(page, ""))
 
-# Function to display medical news
 def display_medical_news():
     # Custom CSS for the sidebar header
     st.sidebar.markdown(
@@ -381,20 +427,24 @@ def display_medical_news():
         """,
         unsafe_allow_html=True
     )
-    # Display medical news
-    show_news_button = st.sidebar.button("Show Medical News")
-    if show_news_button:
+
+    # Toggle button
+    show_news = st.sidebar.toggle("Show Medical News", value=False)
+
+    # Display medical news if toggled on
+    if show_news:
         feed_url = "https://health.economictimes.indiatimes.com/rss/topstories"
         articles = fetch_rss_feed(feed_url) # Fetch the RSS feed
+
         if articles:
             for article in articles:
                 st.sidebar.markdown(
-                f"<div style='font-size: 0.9rem;'>"
-                f"<b>Title:</b> <a href='{article['link']}'>{article['title']}</a><br>"
-                f"<b>Published:</b> {article['published']}</div>"
-                "<hr>",
-                unsafe_allow_html=True
-            )
+                    f"<div style='font-size: 0.9rem;'>"
+                    f"<b>Title:</b> <a href='{article['link']}'>{article['title']}</a><br>"
+                    f"<b>Published:</b> {article['published']}</div>"
+                    "<hr>",
+                    unsafe_allow_html=True
+                )
         else:
             st.sidebar.info("No articles available at the moment.")
 
@@ -402,11 +452,9 @@ def display_medical_news():
 def medical_imaging_diagnostics():
     st.header("AI-Assisted Images Analysis")
     #Upload Image
-    st.subheader("Upload Image")
     uploaded_files = st.file_uploader("Upload medical image(s) to be diagnosed (JPG, JPEG, PNG).", type=["jpg", "jpeg", "png"], accept_multiple_files=True)
 
     # Analysis options
-    st.subheader("Analysis Options")
     default_prompt = "Analyze this medical image. Describe what you see, identify any abnormalities, and suggest potential diagnoses."
     prompt = st.text_area("Enter your prompt:", value=default_prompt, height=100)
     analyze_button = st.button("Analyze Image")
@@ -470,11 +518,9 @@ def medical_transcription():
     st.header("Smart Medical Transcriber")
 
     # Upload prescription image
-    st.subheader("Upload Prescription")
     uploaded_file = st.file_uploader("Upload the image of medical prescription (JPG, JPEG, PNG).", type=["jpg", "jpeg", "png"])
 
     # Analysis options
-    st.subheader("Analysis Options")
     default_prompt = "Analyze this medical prescription and transcribe it in tabular format."
     prompt = st.text_area("Enter your prompt:", value=default_prompt, height=100)
     analyze_button = st.button("Get Transcription")
@@ -544,10 +590,8 @@ def extract_info_from_analysis(analysis):
 def medical_pathology_diagnostics():
     st.header("AI-Powered Lab Report Analyzer")
 
-    st.subheader("Upload Report")
     uploaded_file = st.file_uploader("Upload an image of a medical report to be analysed (JPG, JPEG, PNG).", type=["jpg", "jpeg", "png"])
     
-    st.subheader("Analysis Options")
     default_prompt = """You are a highly skilled medical professional specializing in pathology. Please analyze the uploaded medical pathology report and extract the following information accurately and concisely. Present the information in a structured format with clear labels:
 
 1. **Patient Information:**
@@ -644,11 +688,9 @@ def medical_coding():
     st.header("AI Medical Coding")
 
     # Upload medical document image
-    st.subheader("Upload Medical Document")
     uploaded_file = st.file_uploader("Upload a medical document image(s) (JPG, JPEG, PNG).", type=["jpg", "jpeg", "png"])
     
     # Analysis options
-    st.subheader("Analysis Options")
     default_prompt = "Analyze the image and suggest the ICD medical codes with description. Make it simple and concise."
     prompt = st.text_area("Enter your prompt:", value=default_prompt, height=100)
     analyze_button = st.button("Get ICD Codes")
@@ -682,10 +724,8 @@ def medical_coding():
 def insurance_risk_analysis():
     st.header("Health Risk & Insurance Evaluator")
 
-    st.subheader("Upload User's Data Image (JPG, JPEG, PNG)")
-    uploaded_file = st.file_uploader("Choose an image containing user data...", type=["jpg", "jpeg", "png"])
+    uploaded_file = st.file_uploader("Upload an image containing user data (JPG, JPEG, PNG).", type=["jpg", "jpeg", "png"])
     
-    st.subheader("Analysis Options")
     default_prompt = """You are a highly skilled insurance analyst. Please analyze the uploaded image containing user data and calculate the insurance risk percentage. Provide a detailed justification for the calculated risk percentage based on the data.
 
 **Format for Output:**
@@ -729,11 +769,9 @@ def treatment_diet_plan_generator():
     st.header("Personalized Treatment & Diet Planner")
 
     # Upload patient data image
-    st.subheader("Upload Patient's Data Image")
     uploaded_file = st.file_uploader("Choose an image containing the patient's data (JPG, JPEG, PNG)", type=["jpg", "jpeg", "png"])
     
     # Analysis options
-    st.subheader("Analysis Options")
     default_prompt = """You are an experienced medical professional. Carefully analyze the uploaded image containing patient data and generate a well-structured treatment and diet plan based on the provided information.
 
 **Output Format:**
