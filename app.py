@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import google.generativeai as genai
 from PIL import Image as PILImage
+from PIL import ImageFont
 import io
 import os
 from dotenv import load_dotenv
@@ -23,6 +24,12 @@ import joblib
 
 # Load environment variables
 load_dotenv()
+
+# Set the font path
+font_path = os.path.join("fonts", "ARIAL.TTF")
+
+# Load the font
+font = ImageFont.truetype(font_path, 24)
 
 # Function to convert local image to Base64
 def get_base64_image(image_path):
@@ -286,7 +293,7 @@ def create_pdf_report(patient_info, service_info, specimens, theranostic_report,
     elements = []
 
     # Set styles and register a custom font
-    pdfmetrics.registerFont(TTFont('Arial', 'arial.ttf')) # Register the Arial font
+    pdfmetrics.registerFont(TTFont('Arial', 'fonts/ARIAL.TTF')) # Register the Arial font
     styles = getSampleStyleSheet() # Get the default sample style sheet
     # Define custom styles
     styleN = ParagraphStyle('Normal', fontName='Arial', fontSize=10, leading=12)
