@@ -6,7 +6,7 @@ Welcome to **Swasthya Sathi AI**, a cutting-edge AI-powered medical assistant de
   <img src="assets/icon.jpeg" alt="Swasthya Sathi AI" width="250" height="250" >
 </p>
 
-## Key Features 🚀
+## Key Features
 Swasthya Sathi AI consists of multiple features, each addressing a key aspect of medical diagnostics:
 
 1. **AI-Assisted Images Analysis** – AI-based analysis of medical images.
@@ -19,7 +19,7 @@ Swasthya Sathi AI consists of multiple features, each addressing a key aspect of
 
 ---
 
-## Installation and Setup ⚙️
+## Installation and Setup
 
 ### **1️⃣ Clone the Repository**
 ```sh
@@ -44,7 +44,7 @@ GOOGLE_API_KEY=your_google_api_key
 
 ---
 
-## 🚀 Module Breakdown  
+## Module Breakdown  
 
 ### 1️⃣ **AI-Assisted Image Analysis**  
 📸 Upload medical related images like X-rays and get AI-driven insights, including abnormality detection and diagnostic suggestions.  
@@ -96,7 +96,7 @@ GOOGLE_API_KEY=your_google_api_key
 
 ---
 
-## Additional Features 🛠️
+## Additional Features
 
 ✅ **Multiple Report Formats** – Choose different designs and colors for downloadable reports.  
 ✅ **Customizable Prompts** – Modify AI prompts for personalized outputs.  
@@ -108,7 +108,7 @@ GOOGLE_API_KEY=your_google_api_key
 
 ---
 
-## Future Enhancements 🚀
+## Future Enhancements
 
 🔹 **Deep Learning-Based Image Diagnosis** – Integrate advanced CNN models for **more accurate** and **automated** medical image analysis.  
 🔹 **Voice-Based Medical Assistance** – Implement a **voice-enabled AI assistant** for hands-free interaction, making healthcare guidance more accessible.  
