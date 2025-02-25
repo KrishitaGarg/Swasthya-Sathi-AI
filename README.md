@@ -6,6 +6,12 @@ Welcome to **Swasthya Sathi AI**, a cutting-edge AI-powered medical assistant de
   <img src="assets/icon.jpeg" alt="Swasthya Sathi AI" width="250" height="250" >
 </p>
 
+> *Experience the AI-powered medical diagnostics and assistance tool in action!*  
+
+## Live Demo  
+Want to try it yourself? Click the link below:  
+🔗 [Try Swasthya Sathi AI](https://swasthya-sathi-ai.streamlit.app/)  
+
 ## Key Features
 Swasthya Sathi AI consists of multiple features, each addressing a key aspect of medical diagnostics:
 
