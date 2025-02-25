@@ -176,7 +176,7 @@ st.sidebar.image("assets/icon.jpeg", use_container_width=True)
 
 # Navigation menu
 selected = option_menu(
-    menu_title="Smart AI Medical Assistant", 
+    menu_title="Smart Medical Diagnosis & Assistance Platform", 
     options=["AI-Assisted Images Analysis", "Smart Medical Transcriber", "AI-Powered Lab Report Analyzer", "AI Medical Coding", "Health Risk & Insurance Evaluator", "Personalized Treatment & Diet Planner", "AI-Powered Medical Assistance"],
     icons=["activity", "file-text", "file-medical", "file-code", "shield-plus", "heart-pulse", "robot"], 
     orientation="horizontal",
@@ -255,10 +255,10 @@ def create_pathology_report(patient_info, service_info, specimens, theranostic_r
             plt.text(x + 0.01, y + height - 0.03, text, ha=ha, va=va, fontsize=fontsize, fontweight=fontweight, family='DejaVu Sans', clip_on=True) # Add the text to the plot
 
     # Add the main header
-    plt.text(0.5, 0.96, 'LABORATORY MEDICINE PROGRAM', ha='center', va='center', fontsize=15, family='DejaVu Sans', fontweight='bold')
+    plt.text(0.5, 0.96, 'Swasthya Sathi AI', ha='center', va='center', fontsize=15, family='DejaVu Sans', fontweight='bold')
 
     # Add the subheader
-    plt.text(0.5, 0.93, 'Surgical Pathology Consultation Report', ha='center', va='center', fontsize=13, family='DejaVu Sans', fontweight='bold')
+    plt.text(0.5, 0.93, 'Pathology Consultation Report', ha='center', va='center', fontsize=13, family='DejaVu Sans', fontweight='bold')
 
     # Define the increased height for each section
     section_height = 0.8 / 4
@@ -390,8 +390,6 @@ def create_pdf_report(patient_info, service_info, specimens, theranostic_report,
 
     buffer.seek(0)
     return buffer
-
-
 
 # Function to display common instructions
 def display_instructions(page):
