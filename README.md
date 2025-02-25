@@ -92,6 +92,8 @@ GOOGLE_API_KEY=your_google_api_key
 🤖 A smart chatbot for **symptom analysis, medical guidance, and answering healthcare-related queries**.  
 🔬 **Disease Prediction Model** predicts potential diseases based on **user-provided symptoms** using a trained ML model.
 
+![Medical Assisstant](assets/screenshots/medical_assisstant.png)
+
 ---
 
 ## Additional Features 🛠️
