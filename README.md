@@ -49,42 +49,42 @@ GOOGLE_API_KEY=your_google_api_key
 ### 1️⃣ **AI-Assisted Image Analysis**  
 📸 Upload medical related images like X-rays and get AI-driven insights, including abnormality detection and diagnostic suggestions.  
 
-![Medical Imaging Diagnostics](assets/medical_imaging.png)
+![Medical Imaging Diagnostics](assets/screenshots/medical_imaging.png)
 
 ---
 
 ### 2️⃣ **Smart Medical Transcriber**  
 📝 Converts medical prescriptions into structured text in a tabular format for better readability and organization.  
 
-![Medical Transcription](assets/medical_transcription.png)
+![Medical Transcription](assets/screenshots/medical_transcription.png)
 
 ---
 
 ### 3️⃣ **AI-Powered Lab Report Analyzer**  
 🔬 Upload pathology reports and get AI-driven insights in an easy-to-understand format for both professionals and patients.  
 
-![Pathology Report Analysis](assets/pathology_report.png)
+![Pathology Report Analysis](assets/screenshots/pathology_report.png)
 
 ---
 
 ### 4️⃣ **AI Medical Coding**  
 🏥 Automatically suggests **ICD medical codes** with descriptions based on medical data, streamlining coding for healthcare professionals.  
 
-![Medical Coding](assets/medical_coding.png)
+![Medical Coding](assets/screenshots/medical_coding.png)
 
 ---
 
 ### 5️⃣ **Health Risk & Insurance Evaluator**  
 📉 Assesses patient data and calculates **insurance risk** percentages with AI-based justifications.  
 
-![Insurance Risk Analysis](assets/insurance_risk.png)
+![Insurance Risk Analysis](assets/screenshots/insurance_risk.png)
 
 ---
 
 ### 6️⃣ **Personalized Treatment & Diet Planner**
 🎯 Generates AI-suggested **treatment** and **diet plans** based on patient medical history and symptoms.  
 
-![Treatment and Diet Plan](assets/treatment_diet.png)
+![Treatment and Diet Plan](assets/screenshots/treatment_diet.png)
 
 ---
 
@@ -100,6 +100,9 @@ GOOGLE_API_KEY=your_google_api_key
 ✅ **Customizable Prompts** – Modify AI prompts for personalized outputs.  
 ✅ **Secure Data Handling** – All data remains confidential and secure.  
 ✅ **User-Friendly UI** – Simple and intuitive interface for medical professionals.  
+✅ **Latest Medical News Updates** – Stay informed with real-time medical news directly on the platform.  
+
+![Medical News](assets/screenshots/medical_news.png)
 
 ---
 
