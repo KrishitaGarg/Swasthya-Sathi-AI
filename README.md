@@ -104,7 +104,7 @@ GOOGLE_API_KEY=your_google_api_key
 
 ## Additional Features
 
-✅ **Multiple Report Formats** – Choose different designs and colors for downloadable reports.  
+✅ **Different Downloadable PDF Formats** – Generate reports in various formats tailored for different models.  
 ✅ **Customizable Prompts** – Modify AI prompts for personalized outputs.  
 ✅ **Secure Data Handling** – All data remains confidential and secure.  
 ✅ **User-Friendly UI** – Simple and intuitive interface for medical professionals.  
