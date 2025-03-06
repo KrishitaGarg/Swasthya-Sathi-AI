@@ -22,6 +22,8 @@ import base64
 import numpy as np
 import joblib
 import re
+import time
+
 
 # Load environment variables
 load_dotenv()
@@ -53,16 +55,16 @@ st.markdown(
     """
     <style>
     body {
-        background-color: #f4f1ea;
+        background-color: #F5F3D8;
         font-family: 'Arial', sans-serif;
     }
     .stApp {
         padding: 20px;
         border-radius: 10px;
-        background-color: #f4f1ea;
+        background-color: #F5F3D8;
     }
     .stButton>button {
-        background-color: #4a2618;
+        background-color: #1D2A62;
         color: white;
         border: none;
         padding: 6px 24px;
@@ -72,8 +74,9 @@ st.markdown(
         transition: background 0.3s ease, transform 0.2s ease;
     }
     .stButton>button:hover {
-        background-color: #8b5e34;
-        color: white;
+        background-color: #87AECE;
+        border: 2px solid black;
+        color: black;
         transform: scale(1.05);
     }
     .stTextInput>div>div>input {
@@ -90,7 +93,7 @@ st.markdown(
         margin-top: 50px;
     }
     .stSidebar > div {
-        background-color: rgba(255, 255, 255, 0.95);
+        background-color: #F0F4EF;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
@@ -118,8 +121,9 @@ st.markdown(
         width: 80%;
     }
     .stFileUploader label {
-        background-color: #a48173 !important;
+        background-color: none !important;
         color: black !important;
+        border: 2px solid #1D2A62 !important;
         padding: 10px 20px;
         border-radius: 8px;
         font-size: 16px;
@@ -129,14 +133,10 @@ st.markdown(
         display: inline-block;
         margin-bottom: 10px;
     }
-    .stFileUploader label:hover {
-        background-color: #8b5e34 !important;
-        color: white !important;
-        transform: scale(1.005);
-    }
     .stTextArea label {
-        background-color: #a48173 !important;
+        background-color: none !important;
         color: black !important;
+        border: 2px solid #1D2A62 !important;
         font-size: 16px !important;
         padding: 8px 15px !important;
         border-radius: 8px !important;
@@ -144,11 +144,6 @@ st.markdown(
         transition: all 0.3s ease;
         margin-bottom: 10px;
         margin-top: 10px;
-    }
-    .stTextArea label:hover {
-        background-color: #8b5e34 !important;
-        transform: scale(1.05);
-        color: white !important;
     }
     div.stForm div.stFormSubmitButton > button {
         background-color: #4a2618 !important;
@@ -181,10 +176,10 @@ selected = option_menu(
     icons=["activity", "file-text", "file-medical", "file-code", "shield-plus", "heart-pulse", "robot"], 
     orientation="horizontal",
     styles={
-        "container": {"padding": "15px 0!important", "background-color": "#d8c3a5"},
+        "container": {"padding": "15px 0!important", "background-color": "#87AECE"},
         "icon": {"color": "#00000", "font-size": "20px"},
-        "nav-link": {"font-size": "16px", "font-family": "serif", "text-align": "center", "margin":"0px", "--hover-color": "#9e7665"},
-        "nav-link-selected": {"background-color": "#4a2618", "font-weight": "10px"},}
+        "nav-link": {"font-size": "16px", "font-family": "serif", "text-align": "center", "margin":"0px", "--hover-color": "#B4CDED"},
+        "nav-link-selected": {"background-color": "#1D2A62", "font-weight": "10px"},}
 )
 
 @st.cache_resource # Cache the model to avoid loading it multiple times
@@ -855,17 +850,20 @@ Ensure that the recommendations are **accurate, medically sound, and easy to fol
         elif not generate_plan_button:
             st.info("Click 'Generate Plan' to start the analysis.")
 
+# Load the helpbot model
 def load_helpbot_model():
     api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
-        st.error("Google API Key not found in .env file.")
         st.stop()
-    
+
     genai.configure(api_key=api_key)
 
     system_instruction = """
     You are a highly skilled medical assistant. Every response MUST follow this structured format:
-    
+
+    A starting line to initiate conversation.
+    ---
+
     - **Possible Causes:**
       - [List of possible causes]
 
@@ -882,53 +880,92 @@ def load_helpbot_model():
     **Disclaimer:**  
     *I am an AI medical assistant. My responses are based on training data and should not replace professional medical advice. Always consult a healthcare provider.*
     """
-    
+
     return genai.GenerativeModel(
         model_name="gemini-1.5-flash",
         system_instruction=system_instruction
     )
 
+
 def generate_helpbot_response(user_input):
     model = load_helpbot_model()
-    
     try:
-        response = model.generate_content(user_input, stream=True)
-        return response
+        response = model.generate_content(user_input, stream=False)
+        return response.text
     except Exception as e:
         return f"⚠️ Error generating response: {str(e)}"
 
+
 def helpBot():
-    st.subheader("💬 Medical Chatbot")
+    st.markdown("### 🗨️ Swasthya Sathi HelpBot")
 
-    # Initialize chatbot session
-    if "helpbot_messages" not in st.session_state:
-        st.session_state.helpbot_messages = []
+    if "messages" not in st.session_state:
+        st.session_state["messages"] = []
 
-    # Display chat history
-    for message in st.session_state.helpbot_messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+    # Custom CSS
+    chat_box_css = """
+    <style>
+    .scrollable-box {
+        height: 400px;
+        overflow-y: scroll;
+        border: 1px solid #cdb79e;
+        padding: 20px;
+        background-color: #f5f5dc;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column-reverse;
+        margin-bottom: 10px;
+    }
+    .stChatInput input {
+        border: 2px solid #cdb79e;
+        border-radius: 20px;
+        padding: 10px;
+        background-color: #f5f5dc;
+        color: #6d4c41;
+    }
+    .stChatInput input::placeholder {
+        color: #9e7e67;
+        font-style: italic;
+    }
+    .stChatInput button {
+        color: black !important;
+        border: none;
+        border-radius: 50% !important;
+        padding: 4px !important;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+    .stChatInput button:hover {
+        background-color: #9e7e67 !important;
+    }
+    </style>
+    """
+    st.markdown(chat_box_css, unsafe_allow_html=True)
 
-    # Get user input
-    user_message = st.chat_input("Type your message here...")
+    # Chat Container
+    chat_container = st.container()
 
-    if user_message:
-        st.session_state.helpbot_messages.append({"role": "user", "content": user_message})
-        st.chat_message("user").markdown(user_message)
+    with chat_container:
+        chat_html = '<div class="scrollable-box">'
+        for message in reversed(st.session_state["messages"]):
+            chat_html += message
+        chat_html += '</div>'
+        st.markdown(chat_html, unsafe_allow_html=True)
 
-        # Placeholder for streaming bot response
-        bot_response_container = st.chat_message("assistant").empty()
+    user_input = st.chat_input("Type your query here...")
 
-        # Stream AI response
-        full_response = ""
-        response = generate_helpbot_response(user_message)
-        for chunk in response:
-            full_response += chunk.text
-            bot_response_container.markdown(full_response + "▌")  # Add cursor effect
-        bot_response_container.markdown(full_response)  # Final response
+    if user_input and user_input.strip():
+        user_message = f'<div style="text-align: right; color: black;"><span style="background-color: #344966; padding: 10px; border-radius: 8px; color: white;"> 🧑‍💻 {user_input}</span></div>'
+        st.session_state["messages"].append(user_message)
 
-        # Store complete response in chat history
-        st.session_state.helpbot_messages.append({"role": "assistant", "content": full_response})
+        # Generate AI Response
+        bot_response = generate_helpbot_response(user_input)
+        bot_message = f'<div style="text-align: left; color: #344966;">🤖 {bot_response}</div>'
+        st.session_state["messages"].append(bot_message)
+
+        # Rerun to show updated messages
+        st.rerun()
+
 
 
 # Load Disease Prediction Model
@@ -966,13 +1003,20 @@ def disease_prediction_ui():
     st.subheader("📋 AI-Powered Disease Prediction")
     models, label_encoder, symptom_list = load_models()
 
-    selected_symptoms = st.multiselect("Select your symptoms:", symptom_list)
-    model_name = st.selectbox("Select Model:", ["Naive Bayes", "Decision Tree", "Random Forest"])
+    selected_symptoms = st.multiselect("**Select your symptoms:**", symptom_list)
+    model_name = st.selectbox("**Select Model**:", ["Naive Bayes", "Decision Tree", "Random Forest"])
     if st.button("🔍 Predict Disease"):
         if selected_symptoms:
             try:
                 predicted_disease = predict_disease(selected_symptoms, model_name)
-                st.success(f"🔍 **Predicted Disease:** {predicted_disease}")
+                st.markdown(
+                    f"""
+                    <div style="background-color: #B4CDED; padding: 10px; border-radius: 8px;">
+                        <strong>🔍 Predicted Disease:</strong> {predicted_disease}
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
             except Exception as e:
                 st.error(f"⚠️ Error in prediction: {str(e)}")
         else:
@@ -990,7 +1034,7 @@ def apply_styles():
 
         /* Headers */
         h1 {
-            color: #1c4e80;
+            color: #1D2A62 !important;
             text-align: center;
             font-size: 28px;
         }
@@ -1031,11 +1075,16 @@ def apply_styles():
 
         /* Buttons */
         .stButton button {
-            background-color: #007bff;
-            color: white;
+            background-color: #1D2A62 !important;
+            color: white !important;
             border-radius: 5px;
             padding: 8px 16px;
             font-size: 16px;
+        }
+
+        .stButton button:hover {
+            background-color: #87AECE !important;
+            color: #1D2A62 !important;
         }
         
         /* Warning Messages */
@@ -1050,7 +1099,7 @@ def apply_styles():
         /* Success Messages */
         .stSuccess {
             color: #155724;
-            background-color: #d4edda;
+            background-color: #B4CDED !important;
             border-left: 5px solid #28a745;
             padding: 10px;
             margin-bottom: 10px;
@@ -1068,23 +1117,23 @@ def apply_styles():
             div[data-testid="stTabs"] button {
                 font-size: 24px;
                 font-weight: bold;
-                color: white;  /* White text */
+                color: black;
                 border-radius: 8px;
                 padding: 10px 20px;
                 margin: 5px;
-                background-color: #4a2618;
+                background-color: #87AECE;
             }
 
             /* Active tab color */
             div[data-testid="stTabs"] button[aria-selected="true"] {
-                background-color: #4a2618 !important; /* Orange active tab */
+                background-color: #1D2A62 !important;
                 color: white !important;
             }
 
             /* Hover effect */
             div[data-testid="stTabs"] button:hover {
-                background-color: #8b5e34 !important; /* Darker blue */
-                color: black !important;
+                background-color: #1D2A62 !important;
+                color: white !important;
             }
 
             /* Custom Styling for Chat Input Box */
@@ -1133,7 +1182,7 @@ def medical_assistant_app():
     apply_styles()
 
     st.header("🩺 AI-Powered Medical Assistance")
-    tab1, tab2 = st.tabs(["💬 Medical Chatbot", "📋 Disease Prediction"])
+    tab1, tab2 = st.tabs(["🗨️ Medical Chatbot", "📋 Disease Prediction"])
     with tab1:
         helpBot()
     with tab2:
@@ -1141,7 +1190,7 @@ def medical_assistant_app():
 
 # Main app
 def main():
-    st.sidebar.markdown("<h3 style='text-align: center; color: #11111; font-family: comic sans ms;'>Swasthya Sathi AI</h3>", unsafe_allow_html=True)
+    st.sidebar.markdown("<h3 style='text-align: center; color: #1D2A62; font-family: comic sans ms;'>Swasthya Sathi AI</h3>", unsafe_allow_html=True)
     display_instructions(selected) # Display instructions based on the selected option
     display_medical_news() # Display medical news in the sidebar
 
