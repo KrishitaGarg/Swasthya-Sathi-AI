@@ -183,8 +183,8 @@ selected = option_menu(
     styles={
         "container": {"padding": "15px 0!important", "background-color": "#d8c3a5"},
         "icon": {"color": "#00000", "font-size": "20px"},
-        "nav-link": {"font-size": "15px", "font-family": "serif", "text-align": "center", "margin":"0px", "--hover-color": "#fadfd4"},
-        "nav-link-selected": {"background-color": "#4a2618"},}
+        "nav-link": {"font-size": "16px", "font-family": "serif", "text-align": "center", "margin":"0px", "--hover-color": "#9e7665"},
+        "nav-link-selected": {"background-color": "#4a2618", "font-weight": "10px"},}
 )
 
 @st.cache_resource # Cache the model to avoid loading it multiple times
@@ -342,7 +342,7 @@ def create_pdf_report(patient_info, service_info, specimens, theranostic_report,
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ('LEFTPADDING', (0, 0), (-1, -1), 50),  # Shift table right
+        ('LEFTPADDING', (0, 0), (-1, -1), 50),
     ])
 
     patient_table = Table([
@@ -400,7 +400,7 @@ def display_instructions(page):
         <style>
         .sidebar-header {
             text-align: center;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
         }
         </style>
@@ -491,6 +491,7 @@ def display_medical_news():
 
 # Function to handle Medical Imaging Diagnostics section
 def medical_imaging_diagnostics():
+
     st.header("AI-Assisted Images Analysis")
     #Upload Image
     uploaded_files = st.file_uploader("Upload medical image(s) to be diagnosed (JPG, JPEG, PNG).", type=["jpg", "jpeg", "png"], accept_multiple_files=True)
