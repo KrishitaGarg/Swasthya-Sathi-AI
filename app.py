@@ -855,20 +855,17 @@ Ensure that the recommendations are **accurate, medically sound, and easy to fol
         elif not generate_plan_button:
             st.info("Click 'Generate Plan' to start the analysis.")
 
-# Load AI medical chatbot
 def load_helpbot_model():
-
-    # configure the model using API key from the environment variables
     api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
         st.error("Google API Key not found in .env file.")
         st.stop()
+    
     genai.configure(api_key=api_key)
 
-    # System instruction for the AI medical chatbot
     system_instruction = """
     You are a highly skilled medical assistant. Every response MUST follow this structured format:
-
+    
     - **Possible Causes:**
       - [List of possible causes]
 
@@ -885,139 +882,261 @@ def load_helpbot_model():
     **Disclaimer:**  
     *I am an AI medical assistant. My responses are based on training data and should not replace professional medical advice. Always consult a healthcare provider.*
     """
-
+    
     return genai.GenerativeModel(
         model_name="gemini-1.5-flash",
         system_instruction=system_instruction
     )
 
-def load_models():
+def generate_helpbot_response(user_input):
+    model = load_helpbot_model()
+    
+    try:
+        response = model.generate_content(user_input, stream=True)
+        return response
+    except Exception as e:
+        return f"⚠️ Error generating response: {str(e)}"
 
-    # Load the trained models
+def helpBot():
+    st.subheader("💬 Medical Chatbot")
+
+    # Initialize chatbot session
+    if "helpbot_messages" not in st.session_state:
+        st.session_state.helpbot_messages = []
+
+    # Display chat history
+    for message in st.session_state.helpbot_messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    # Get user input
+    user_message = st.chat_input("Type your message here...")
+
+    if user_message:
+        st.session_state.helpbot_messages.append({"role": "user", "content": user_message})
+        st.chat_message("user").markdown(user_message)
+
+        # Placeholder for streaming bot response
+        bot_response_container = st.chat_message("assistant").empty()
+
+        # Stream AI response
+        full_response = ""
+        response = generate_helpbot_response(user_message)
+        for chunk in response:
+            full_response += chunk.text
+            bot_response_container.markdown(full_response + "▌")  # Add cursor effect
+        bot_response_container.markdown(full_response)  # Final response
+
+        # Store complete response in chat history
+        st.session_state.helpbot_messages.append({"role": "assistant", "content": full_response})
+
+
+# Load Disease Prediction Model
+def load_models():
     models = {
         "Decision Tree": joblib.load("decision_tree_model.pkl"),
         "Random Forest": joblib.load("random_forest_model.pkl"),
         "Naive Bayes": joblib.load("naive_bayes_model.pkl"),
     }
-
-    # Load the label encoder and symptom list
     label_encoder = joblib.load("label_encoder.pkl")
     symptom_list = joblib.load("symptom_list.pkl")
-    
     return models, label_encoder, symptom_list
 
-# Predict disease based on symptoms
 def predict_disease(symptoms, model_name="Decision Tree"):
     models, label_encoder, symptom_list = load_models()
-
-    input_vector = np.zeros(len(symptom_list))  # Create an input vector with all zeros
-
+    input_vector = np.zeros(len(symptom_list))
     for symptom in symptoms:
         if symptom in symptom_list:
-            index = symptom_list.index(symptom) # Get the index of the symptom
-            input_vector[index] = 1  # Set the corresponding index to 1
+            index = symptom_list.index(symptom)
+            input_vector[index] = 1
         else:
-            st.warning(f"⚠️ Symptom '{symptom}' not recognized.") # Warn if the symptom is not recognized
-
-    input_vector = input_vector.reshape(1, -1)  # Reshape for model input
-
+            st.warning(f"⚠️ Symptom '{symptom}' not recognized.")
+    
+    input_vector = input_vector.reshape(1, -1)
     model = models.get(model_name)
     if not model:
         st.error(f"❌ Model '{model_name}' not found.")
         return None
-
-    prediction_index = model.predict(input_vector)[0] # Predict the disease index
-    predicted_disease = label_encoder.inverse_transform([prediction_index])[0] # Inverse transform to get the disease name
-
+    
+    prediction_index = model.predict(input_vector)[0]
+    predicted_disease = label_encoder.inverse_transform([prediction_index])[0]
     return predicted_disease
 
-# Disease Prediction UI
 def disease_prediction_ui():
     st.subheader("📋 AI-Powered Disease Prediction")
-    models, label_encoder, symptom_list = load_models() # Load the models, label encoder, and symptom list
+    models, label_encoder, symptom_list = load_models()
 
-    if "show_form" not in st.session_state:
-        st.session_state.show_form = True # Initialize the show_form state
-    if "predicted_disease" not in st.session_state:
-        st.session_state.predicted_disease = None # Initialize the predicted_disease state
+    selected_symptoms = st.multiselect("Select your symptoms:", symptom_list)
+    model_name = st.selectbox("Select Model:", ["Naive Bayes", "Decision Tree", "Random Forest"])
+    if st.button("🔍 Predict Disease"):
+        if selected_symptoms:
+            try:
+                predicted_disease = predict_disease(selected_symptoms, model_name)
+                st.success(f"🔍 **Predicted Disease:** {predicted_disease}")
+            except Exception as e:
+                st.error(f"⚠️ Error in prediction: {str(e)}")
+        else:
+            st.warning("⚠️ Please select at least one symptom.")
 
-    if st.session_state.show_form:
-        with st.form("disease_prediction_form"):
-            st.markdown("Please provide details for better diagnosis:")
+def apply_styles():
+    st.markdown(
+        """
+        <style>
+        /* Main Page */
+        .main {
+            background-color: #f4f8fb;
+            font-family: 'Arial', sans-serif;
+        }
 
-            selected_symptoms = st.multiselect("Select your symptoms:", symptom_list) # Select the symptoms
-            model_name = st.selectbox("Select Model:", ["Naive Bayes", "Decision Tree", "Random Forest"]) # Select the model
+        /* Headers */
+        h1 {
+            color: #1c4e80;
+            text-align: center;
+            font-size: 28px;
+        }
 
-            submitted = st.form_submit_button("🔍 Predict Disease")
+        h2 {
+            color: #134567;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
 
-        if submitted:
-            if selected_symptoms:
-                try:
-                    st.session_state.predicted_disease = predict_disease(selected_symptoms, model_name)
-                except Exception as e:
-                    st.session_state.predicted_disease = f"⚠️ Error in prediction: {str(e)}"
-            else:
-                st.warning("⚠️ Please select at least one symptom.")
+        /* Chatbot UI */
+        .stChatMessage {
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
 
-    if st.session_state.predicted_disease:
-        st.success(f"🔍 **Predicted Disease:** {st.session_state.predicted_disease}")
+        /* User messages */
+        .stChatMessage[data-testid="stChatMessage-user"] {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            text-align: right;
+        }
 
-    if st.session_state.show_form:
-        if st.button("❌ Close Form"):
-            st.session_state.show_form = False
-            st.session_state.predicted_disease = None
-            st.rerun()
-    else:
-        if st.button("🩺 Start Disease Prediction"):
-            st.session_state.show_form = True
-            st.rerun()
+        /* Assistant messages */
+        .stChatMessage[data-testid="stChatMessage-assistant"] {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
 
-# HelpBot UI
-def helpBot():
-    st.subheader("💬 Medical Query Assistant")
+        /* Disease Prediction UI */
+        .stForm {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
 
-    if "helpbot_chat_session" not in st.session_state:
-        model = load_helpbot_model() # Load the AI medical chatbot model
-        st.session_state.helpbot_chat_session = model.start_chat(history=[]) # Start the chat session
+        /* Buttons */
+        .stButton button {
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            padding: 8px 16px;
+            font-size: 16px;
+        }
+        
+        /* Warning Messages */
+        .stWarning {
+            color: #856404;
+            background-color: #fff3cd;
+            border-left: 5px solid #ffbf00;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        /* Success Messages */
+        .stSuccess {
+            color: #155724;
+            background-color: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        /* Error Messages */
+        .stError {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-left: 5px solid #dc3545;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        /* Change tab font size, color, and style */
+            div[data-testid="stTabs"] button {
+                font-size: 24px;
+                font-weight: bold;
+                color: white;  /* White text */
+                border-radius: 8px;
+                padding: 10px 20px;
+                margin: 5px;
+                background-color: #4a2618;
+            }
 
-    if "helpbot_messages" not in st.session_state:
-        st.session_state.helpbot_messages = [] # Initialize the chat history
+            /* Active tab color */
+            div[data-testid="stTabs"] button[aria-selected="true"] {
+                background-color: #4a2618 !important; /* Orange active tab */
+                color: white !important;
+            }
 
-    st.container()
-    for message in st.session_state.helpbot_messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"]) # Display the chat history
+            /* Hover effect */
+            div[data-testid="stTabs"] button:hover {
+                background-color: #8b5e34 !important; /* Darker blue */
+                color: black !important;
+            }
 
-    if user_input := st.chat_input("Describe your symptoms or ask a medical question..."):
-        st.chat_message("user").markdown(user_input) # Display user input in the chat
-        st.session_state.helpbot_messages.append({"role": "user", "content": user_input}) # Add user input to the chat history
+            /* Custom Styling for Chat Input Box */
+            .chat-input-container {
+                display: flex;
+                align-items: center;
+                border: 2px solid #4a2618;
+                border-radius: 8px;
+                width: 100%;
+                background: #D8C3A5;
+                padding: 0;
+            }
 
-        with st.chat_message("assistant"): 
-            message_placeholder = st.empty() # Create a placeholder for the response
-            full_response = ""
+            .chat-input {
+                flex-grow: 1;
+                border: none;
+                padding: 0px 10px;
+                font-size: 16px;
+                outline: none;
+                background: transparent;
+                width: 100%;
+            }
 
-            with st.spinner("Processing..."): # Show a spinner while processing the response
-                response_stream = st.session_state.helpbot_chat_session.send_message(user_input, stream=True) # Send user input to the chatbot
-                for chunk in response_stream: # Get the response from the chatbot
-                    full_response += chunk.text # Append the response to the full response
-                    message_placeholder.markdown(full_response + "▌") # Display the response in the chat
-                message_placeholder.markdown(full_response) # Display the full response
+            .send-button {
+                background-color: #007BFF;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 16px;
+                transition: 0.3s;
+            }
 
-def medical_query_assisstant():
+            .send-button:hover {
+                background-color: #0056b3;
+                transform: scale(1.1);
+            }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+# Main Application UI
+def medical_assistant_app():
+    apply_styles()
+
     st.header("🩺 AI-Powered Medical Assistance")
-
-    col1, col2 = st.columns(2)
-    with col1:
-        st.success("📊 Get AI-powered medical insights based on your symptoms.")
-        st.info("📈 Cross-referenced potential diagnoses for better decision-making.")
-    with col2:
-        st.warning("📄 Receive recommendations for further medical consultation.")
-        st.error("💡 AI-assisted healthcare guidance tailored to your needs.")
-
-    col1, col2 = st.columns([2, 2])
-    with col1:
+    tab1, tab2 = st.tabs(["💬 Medical Chatbot", "📋 Disease Prediction"])
+    with tab1:
         helpBot()
-    with col2:
+    with tab2:
         disease_prediction_ui()
 
 # Main app
@@ -1039,7 +1158,7 @@ def main():
     elif selected == "Personalized Treatment & Diet Planner":
         treatment_diet_plan_generator()
     elif selected == "AI-Powered Medical Assistance":
-        medical_query_assisstant()
+        medical_assistant_app()
 
 if __name__ == "__main__":
     main()
