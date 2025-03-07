@@ -1,0 +1,25 @@
+.marquee-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  overflow: hidden;
+  margin-top: 30px;
+}
+
+.icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 40px;
+}
+
+.icon {
+  height: 70px;
+  width: auto;
+  transition: transform 0.3s ease;
+}
+
+.icon:hover {
+  transform: scale(1.2);
+}
