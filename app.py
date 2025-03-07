@@ -55,13 +55,13 @@ st.markdown(
     """
     <style>
     body {
-        background-color: #F5F3D8;
+        background-color: white;
         font-family: 'Arial', sans-serif;
     }
     .stApp {
         padding: 20px;
         border-radius: 10px;
-        background-color: #F5F3D8;
+        background-color: white;
     }
     .stButton>button {
         background-color: #1D2A62;
