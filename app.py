@@ -1039,7 +1039,7 @@ def disease_prediction_ui():
 
                 st.markdown(
                     f"""
-                    <div style="background-color: #B4CDED; padding: 10px; border-radius: 8px;">
+                    <div style="background-color: #C8E6C9; padding: 10px; border-radius: 8px;">
                         <strong>🔍 Predicted Disease:</strong> {predicted_disease}
                     </div>
                     <br>
