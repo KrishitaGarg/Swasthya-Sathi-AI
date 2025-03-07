@@ -1,0 +1,119 @@
+disease,drug,age_group,severity
+Influenza,Oseltamivir,both,severe
+Common Cold,Paracetamol,both,mild
+Eczema,Hydrocortisone,both,moderate
+Asthma,Salbutamol,both,moderate
+Hyperthyroidism,Levothyroxine,adult,moderate
+Allergic Rhinitis,Antihistamines,both,mild
+Anxiety Disorders,Antidepressants,both,moderate
+Diabetes,Insulin,both,moderate
+Gastroenteritis,ORS,both,mild
+Pancreatitis,Pantoprazole,adult,severe
+Rheumatoid Arthritis,Methotrexate,adult,severe
+Depression,SSRIs,both,moderate
+Liver Cancer,Chemotherapy,adult,severe
+Stroke,Aspirin,adult,severe
+Urinary Tract Infection,Ciprofloxacin,both,moderate
+Dengue Fever,Dexamethasone,both,moderate
+Hepatitis,Acetaminophen,both,moderate
+Kidney Cancer,Ribavirin,both,severe
+Migraine,Morphine,both,moderate
+Muscular Dystrophy,Sumatriptan,both,moderate
+Sinusitis,Steroids,adult,mild
+Ulcerative Colitis,Decongestants,both,severe
+Bipolar Disorder,Prednisone,adult,moderate
+Bronchitis,Immunosuppressants,both,severe
+Cerebral Palsy,Azathioprine,adult,moderate
+Colorectal Cancer,Proton Pump Inhibitors,adult,moderate
+Hypertensive Heart Disease,Prednisolone,both,severe
+Multiple Sclerosis,Methotrexate,adult,moderate
+Myocardial Infarction,Atenolol,both,severe
+Osteoporosis,Amoxicillin,both,severe
+Pneumonia,Simvastatin,adult,mild
+Atherosclerosis,Fluticasone,both,moderate
+Chronic Obstructive Pulmonary Disease,Benzoyl Peroxide,both,severe
+Epilepsy,Levetiracetam,both,moderate
+Obsessive-Compulsive Disorder,Clomipramine,both,mild
+Psoriasis,Topiramate,both,severe
+Rubella,Acitretin,both,severe
+Cirrhosis,Rubella Vaccine,both,severe
+Conjunctivitis,Ursodeoxycholic Acid,both,mild
+Kidney Disease,Antibiotics,adult,severe
+Liver Disease,Ciprofloxacin,both,severe
+Malaria,Prednisone,both,moderate
+Tuberculosis,Methotrexate,both,severe
+Fibromyalgia,Hydrochlorothiazide,adult,moderate
+Hypoglycemia,Antibiotics,adult,severe
+Lymphoma,Antidepressants,adult,moderate
+Hemophilia,Methotrexate,adult,moderate
+Hypothyroidism,Acyclovir,both,severe
+Autism Spectrum Disorder,Diazepam,adult,moderate
+Crohn's Disease,Chloroquine,both,severe
+Hyperglycemia,Levodopa,both,severe
+Melanoma,Fluoxetine,both,severe
+Ovarian Cancer,Insulin,both,severe
+Turner Syndrome,Amlodipine,adult,moderate
+Zika Virus,Clonidine,adult,moderate
+Cataracts,Hydrocodone,adult,moderate
+Pneumocystis Pneumonia,Thyroid Hormone,both,severe
+Scoliosis,Levodopa,adult,moderate
+Sickle Cell Anemia,Alprazolam,both,moderate
+Tetanus,Sodium Bicarbonate,adult,severe
+Anemia,Tacrolimus,adult,moderate
+Cholera,NSAIDs,both,moderate
+Endometriosis,Heparin,adult,severe
+Sepsis,Simvastatin,adult,severe
+Sleep Apnea,Trastuzumab,both,moderate
+Down Syndrome,Mefloquine,both,severe
+Ebola Virus,Nifedipine,both,mild
+Lyme Disease,Doxorubicin,both,mild
+Pancreatic Cancer,Benzoyl Peroxide,both,moderate
+Pneumothorax,Cisplatin,adult,moderate
+Appendicitis,Lisinopril,adult,severe
+Esophageal Cancer,Antiviral,both,severe
+HIV/AIDS,Ibuprofen,both,severe
+Coronary Artery Disease,Atenolol,both,moderate
+Hemorrhoids,Folic Acid,adult,severe
+Polycystic Ovary Syndrome,Lisinopril,adult,severe
+Systemic Lupus Erythematosus,Antihistamines,adult,mild
+Typhoid Fever,Steroids,adult,moderate
+Breast Cancer,Pantoprazole,both,mild
+Measles,Oral contraceptives,both,mild
+Osteomyelitis,Heparin,both,moderate
+Polio,Penicillin,adult,mild
+Cholecystitis,Methotrexate,both,moderate
+Prostate Cancer,Interferon,adult,moderate
+Schizophrenia,Chloroquine,adult,mild
+Gout,Cetirizine,both,severe
+Testicular Cancer,Tylenol,both,moderate
+Tonsillitis,Stimulants,both,severe
+Williams Syndrome,Sodium Valproate,adult,severe
+Lung Cancer,Paclitaxel,adult,severe
+Cystic Fibrosis,Amoxicillin,both,severe
+Pancreatic Insufficiency,Pancrelipase,both,moderate
+Parkinson's Disease,Carbidopa-Levodopa,adult,moderate
+Chronic Migraine,Topiramate,both,severe
+Huntington's Disease,Haloperidol,adult,severe
+Diabetic Neuropathy,Gabapentin,both,moderate
+Chronic Sinusitis,Nasal Decongestants,both,mild
+Hyperparathyroidism,Calcitriol,adult,moderate
+Multiple Myeloma,Bortezomib,adult,severe
+Pneumocystis Carinii,Trimethoprim-Sulfamethoxazole,both,severe
+Myasthenia Gravis,Neostigmine,both,moderate
+Sjögren's Syndrome,Hydroxychloroquine,adult,moderate
+Sickle Cell Crisis,Hydroxyurea,both,severe
+Hypercalcemia,Calcitonin,adult,moderate
+Viral Hepatitis,Interferon,both,severe
+Cervical Cancer,Cisplatin,adult,severe
+Chronic Fatigue Syndrome,Naphtalene,both,moderate
+Astigmatism,Glaucoma Drops,both,mild
+Scleroderma,Penicillamine,adult,severe
+Polycythemia Vera,Hydroxyurea,adult,moderate
+Chronic Hepatitis C,Ribavirin,both,severe
+Anxiety Panic Disorder,Diazepam,both,moderate
+Hypoglycemic Coma,Glucagon,both,severe
+Thalassemia Major,Deferoxamine,both,moderate
+Liver Cirrhosis,Lactulose,both,severe
+Renal Cell Carcinoma,Sunitinib,adult,severe
+Acne,Isotretinoin,both,moderate
+Osteoarthristis,Ibuprofen,both,moderate
