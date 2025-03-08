@@ -172,7 +172,7 @@ st.sidebar.image("assets/icon.jpeg", use_container_width=True)
 # Navigation menu
 selected = option_menu(
     menu_title="Smart Medical Diagnosis & Assistance Platform", 
-    options=["AI-Assisted Images Analysis", "Smart Medical Transcriber", "AI-Powered Lab Report Analyzer", "AI Medical Coding", "Health Risk & Insurance Evaluator", "Personalized Treatment & Diet Planner", "AI-Powered Medical Assistance"],
+    options=["AI-Assisted Images Analysis", "Smart Prescription Generator", "AI-Powered Lab Report Analyzer", "AI Medical Coding", "Health Risk & Insurance Evaluator", "Personalized Treatment & Diet Planner", "AI-Powered Medical Assistance"],
     icons=["activity", "file-text", "file-medical", "file-code", "shield-plus", "heart-pulse", "robot"], 
     orientation="horizontal",
     styles={
@@ -413,7 +413,7 @@ def display_instructions(page):
             4. If not satisfied with the analysis, click 'Regenerate Analysis'.
             5. View related research papers based on the analysis for further details.
         """,
-        "Smart Medical Transcriber": """
+        "Smart Prescription Generator": """
             1. Upload a medical prescription image using the file uploader.
             2. Enter your prompt or use the default one provided.
             3. Click 'Get Transcription' to see the analysis in tabular format.
@@ -548,7 +548,7 @@ def medical_imaging_diagnostics():
 
 # Function to handle Medical Transcription section
 def medical_transcription():
-    st.header("Smart Medical Transcriber")
+    st.header("Smart Medical Transcription")
 
     # Upload prescription image
     uploaded_file = st.file_uploader("Upload the image of medical prescription (JPG, JPEG, PNG).", type=["jpg", "jpeg", "png"])
@@ -556,7 +556,7 @@ def medical_transcription():
     # Analysis options
     default_prompt = "Analyze this medical prescription and transcribe it in tabular format."
     prompt = st.text_area("Enter your prompt:", value=default_prompt, height=100)
-    analyze_button = st.button("Get Transcription")
+    analyze_button = st.button("Get Structured Prescription")
 
     # Display uploaded image and generated transcription in two columns
     col1, col2 = st.columns(2)
@@ -569,7 +569,7 @@ def medical_transcription():
             st.info("Please upload an image using the uploader.")
 
     with col2:
-        st.subheader("Transcription in Tabular Format")
+        st.subheader("Prescription in Tabular Format")
         if uploaded_file is not None and analyze_button:
             with st.spinner("Analyzing the image..."):
                 try:
@@ -579,9 +579,9 @@ def medical_transcription():
                 except Exception as e:
                     st.error(f"An error occurred: {str(e)}")
         elif uploaded_file is None:
-            st.info("Upload an image and click 'Get Transcription' to see the results.")
+            st.info("Upload an image and click 'Get Structured Prescription' to see the results.")
         elif not analyze_button:
-            st.info("Click 'Get Transcription' to start the analysis.")
+            st.info("Click 'Get Structured Prescription' to start the analysis.")
 
 # Function to extract patient info, service info, and specimens from the analysis
 def extract_info_from_analysis(analysis):
@@ -1030,7 +1030,7 @@ def disease_prediction_ui():
     models, label_encoder, symptom_list = load_models()
 
     selected_symptoms = st.multiselect("**Select your symptoms:**", symptom_list)
-    model_name = st.selectbox("**Select Model**:", ["Decision Tree", "Random Forest"])
+    model_name = st.selectbox("**Select Model**:", ["Random Forest", "Decision Tree"])
 
     if st.button("🔍 Predict Disease"):
         if selected_symptoms:
@@ -1230,7 +1230,7 @@ def main():
 
     if selected == "AI-Assisted Images Analysis":
         medical_imaging_diagnostics()
-    elif selected == "Smart Medical Transcriber":
+    elif selected == "Smart Prescription Generator":
         medical_transcription()
     elif selected == "AI-Powered Lab Report Analyzer":
         medical_pathology_diagnostics()
