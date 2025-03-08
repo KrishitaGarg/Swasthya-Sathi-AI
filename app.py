@@ -966,43 +966,43 @@ def helpBot():
         # Rerun to show updated messages
         st.rerun()
 
-# Load models and necessary data
+# Load trained models and metadata
 def load_models():
     models = {
-        "Decision Tree": joblib.load("decision_tree_model.pkl"),
-        "Random Forest": joblib.load("random_forest_model.pkl"),
-        "Naive Bayes": joblib.load("naive_bayes_model.pkl"),
+        "Decision Tree": joblib.load("models/DecisionTreeModel.pkl"),
+        "Random Forest": joblib.load("models/RandomForestModel.pkl"),
     }
-    label_encoder = joblib.load("label_encoder.pkl")
-    symptom_list = joblib.load("symptom_list.pkl")
+    label_encoder = joblib.load("models/LabelEncoder.pkl")
+    symptom_list = joblib.load("models/SymptomList.pkl")
     return models, label_encoder, symptom_list
 
 # Load disease-drug mapping from CSV
 @st.cache_data
 def load_drug_data():
     df = pd.read_csv("data/disease_drug_age_group_severity.csv")
-
-    # Ensure column names match CSV
+    
+    # Ensure required columns exist
     expected_columns = {"disease", "drug", "age_group", "severity"}
     if not expected_columns.issubset(set(df.columns)):
         raise ValueError(f"CSV is missing expected columns. Found: {df.columns}")
 
-    # Formatting as: "Drug - Ideal Age Group: {age_group}"
+    # Format drug info
     df["Drug_Info"] = df.apply(lambda row: f"{row['drug']}<br><i>Ideal Age Group (Child/Adult): {row['age_group']}</i>", axis=1)
 
-    # Creating dictionary: {Disease: [Drug - Ideal Age Group]}
+    # Map diseases to drugs
     disease_drug_map = df.groupby("disease")["Drug_Info"].apply(list).to_dict()
     return disease_drug_map
 
-# Function to get medicines for a predicted disease
+# Get medicines for a predicted disease
 def get_medicines_for_disease(disease):
     disease_drug_map = load_drug_data()
-    medicines = disease_drug_map.get(disease, ["No specific medicine found. Kindly consult a doctor."])
-    return medicines
+    return disease_drug_map.get(disease, ["No specific medicine found. Kindly consult a doctor."])
 
 # Disease prediction function
 def predict_disease(symptoms, model_name="Decision Tree"):
     models, label_encoder, symptom_list = load_models()
+
+    # Initialize feature vector
     input_vector = np.zeros(len(symptom_list))
 
     for symptom in symptoms:
@@ -1010,14 +1010,16 @@ def predict_disease(symptoms, model_name="Decision Tree"):
             index = symptom_list.index(symptom)
             input_vector[index] = 1
         else:
-            st.warning(f"⚠️ Symptom '{symptom}' not recognized.")
+            st.warning(f"⚠️ Symptom '{symptom}' not recognized. It may not have been used during model training.")
 
     input_vector = input_vector.reshape(1, -1)
     model = models.get(model_name)
+    
     if not model:
         st.error(f"❌ Model '{model_name}' not found.")
         return None
 
+    # Make prediction
     prediction_index = model.predict(input_vector)[0]
     predicted_disease = label_encoder.inverse_transform([prediction_index])[0]
     return predicted_disease
@@ -1028,7 +1030,7 @@ def disease_prediction_ui():
     models, label_encoder, symptom_list = load_models()
 
     selected_symptoms = st.multiselect("**Select your symptoms:**", symptom_list)
-    model_name = st.selectbox("**Select Model**:", ["Naive Bayes", "Decision Tree", "Random Forest"])
+    model_name = st.selectbox("**Select Model**:", ["Decision Tree", "Random Forest"])
 
     if st.button("🔍 Predict Disease"):
         if selected_symptoms:
@@ -1053,7 +1055,6 @@ def disease_prediction_ui():
                 st.error(f"⚠️ Error in prediction: {str(e)}")
         else:
             st.warning("⚠️ Please select at least one symptom.")
-
 
 def apply_styles():
     st.markdown(
