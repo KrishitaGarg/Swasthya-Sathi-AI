@@ -181,10 +181,8 @@ selected = option_menu(
         "nav-link": {"font-size": "16px", "font-family": "serif", "text-align": "center", "margin":"0px", "--hover-color": "#B4CDED"},
         "nav-link-selected": {"background-color": "#1D2A62", "font-weight": "10px"},}
 )
-
-@st.cache_resource # Cache the model to avoid loading it multiple times
-
 # Function to load the Gemini Pro Vision model
+@st.cache_resource
 def load_model():
     api_key = os.getenv("GOOGLE_API_KEY") # Load the Google API Key
     if not api_key:
@@ -967,6 +965,7 @@ def helpBot():
         st.rerun()
 
 # Load trained models and metadata
+@st.cache_resource
 def load_models():
     models = {
         "Decision Tree": joblib.load("models/DecisionTreeModel.pkl"),
