@@ -9,7 +9,7 @@ const featuresList = [
       "Leverages AI to analyze medical images with precision and speed.",
   },
   {
-    title: "Smart Medical Transcriber",
+    title: "Smart Prescription Generator",
     description: "Automatically converts medical dictations into text format.",
   },
   {
@@ -17,7 +17,7 @@ const featuresList = [
     description: "Interprets pathology reports and highlights abnormalities.",
   },
   {
-    title: "Medical Coding",
+    title: "AI Medical Coding",
     description: "Suggests ICD medical codes for medical reports.",
   },
   {
