@@ -59,7 +59,7 @@ GOOGLE_API_KEY=your_google_api_key
 
 ---
 
-### 2️⃣ **Smart Medical Transcriber**  
+### 2️⃣ **Smart Prescription Generator**  
 📝 Converts medical prescriptions into structured text in a tabular format for better readability and organization.  
 
 ![Medical Transcription](assets/screenshots/medical_transcription.png)
