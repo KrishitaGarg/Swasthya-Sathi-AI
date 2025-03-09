@@ -24,6 +24,7 @@ import joblib
 import re
 import time
 import pandas as pd
+from cancer_detection_function import predict_image
 
 # Load environment variables
 load_dotenv()
@@ -484,44 +485,57 @@ def display_medical_news():
 
 # Function to handle Medical Imaging Diagnostics section
 def medical_imaging_diagnostics():
-
     st.header("AI-Assisted Images Analysis")
-    #Upload Image
-    uploaded_files = st.file_uploader("Upload medical image(s) to be diagnosed (JPG, JPEG, PNG).", type=["jpg", "jpeg", "png"], accept_multiple_files=True)
+
+    # Upload Image
+    uploaded_files = st.file_uploader("Upload medical image(s) to be diagnosed (JPG, JPEG, PNG).",
+                                      type=["jpg", "jpeg", "png"], accept_multiple_files=True)
 
     # Analysis options
     default_prompt = "Analyze this medical image. Describe what you see, identify any abnormalities, and suggest potential diagnoses."
     prompt = st.text_area("Enter your prompt:", value=default_prompt, height=100)
+    
+    # Checkbox to decide whether to run ML model or not
+    use_ml_model = st.checkbox("Run ML-based image classification (For Skin Conditions Only) ?")
+
+    # Buttons
     analyze_button = st.button("Analyze Image")
+    regenerate_button = st.button("Regenerate Analysis")
 
-    regenerate_button = st.button("Regenerate Analysis") # Regenerate the analysis
-
-    # Display uploaded image and generated analysis in two columns
+    # Process each uploaded file
     if uploaded_files:
         for uploaded_file in uploaded_files:
             col1, col2 = st.columns(2)
 
             with col1:
                 st.header("Uploaded Image")
-                image = PILImage.open(uploaded_file) # Open the uploaded image
-                st.image(image, caption="Uploaded Medical Image", use_container_width=True) # Display the uploaded image
+                image = PILImage.open(uploaded_file)
+                st.image(image, caption="Uploaded Medical Image", use_container_width=True)
 
             with col2:
                 st.header("Image Analysis")
                 if analyze_button or regenerate_button:
                     with st.spinner("Analyzing the image..."):
                         try:
-                            analysis = analyze_image(image, prompt) # Analyze the image using the AI model
-                            st.markdown(analysis) # Display the analysis
+                            # Run Gemini model analysis
+                            analysis = analyze_image(image, prompt)
+                            st.markdown(analysis)
 
-                            # Extract the diagnosis from the analysis
-                            detailed_diagnosis = analysis # Extract the detailed diagnosis
-                            diagnosis = analysis.split('.')[0] # Extract the first sentence as the diagnosis
+                            # Extract diagnosis from Gemini analysis
+                            detailed_diagnosis = analysis
+                            diagnosis = analysis.split('.')[0]
 
-                            # Save the uploaded image to a buffer
-                            img_buffer = io.BytesIO() # Create a buffer to hold the image
-                            image.save(img_buffer, format='PNG') # Save the image to the buffer
-                            img_buffer.seek(0) # Reset the buffer position to the start
+                            # If ML checkbox is checked, run ML model
+                            if use_ml_model:
+                                with st.spinner("Running AI-based classification..."):
+                                    ml_prediction, confidence = predict_image(uploaded_file)
+                                    st.write(f"**AI Model Prediction:** {ml_prediction} (Confidence: {confidence:.2f})")
+                                    diagnosis += f" | AI Model suggests: {ml_prediction}"
+
+                            # Save uploaded image to buffer
+                            img_buffer = io.BytesIO()
+                            image.save(img_buffer, format='PNG')
+                            img_buffer.seek(0)
 
                             # Generate PDF report
                             pdf_buffer = create_pdf_report("-", "-", "-", diagnosis, detailed_diagnosis, "", img_buffer, "Format 1")
@@ -543,6 +557,7 @@ def medical_imaging_diagnostics():
                             st.error(f"An error occurred: {str(e)}")
                 else:
                     st.info("Click 'Analyze Image' to start the analysis.")
+
 
 # Function to handle Medical Transcription section
 def medical_transcription():
@@ -1009,13 +1024,13 @@ def predict_disease(symptoms, model_name="Decision Tree"):
             index = symptom_list.index(symptom)
             input_vector[index] = 1
         else:
-            st.warning(f"⚠️ Symptom '{symptom}' not recognized. It may not have been used during model training.")
+            st.warning(f"Symptom '{symptom}' not recognized. It may not have been used during model training.")
 
     input_vector = input_vector.reshape(1, -1)
     model = models.get(model_name)
     
     if not model:
-        st.error(f"❌ Model '{model_name}' not found.")
+        st.error(f"Model '{model_name}' not found.")
         return None
 
     # Make prediction
@@ -1051,9 +1066,9 @@ def disease_prediction_ui():
                     unsafe_allow_html=True
                 )
             except Exception as e:
-                st.error(f"⚠️ Error in prediction: {str(e)}")
+                st.error(f"Error in prediction: {str(e)}")
         else:
-            st.warning("⚠️ Please select at least one symptom.")
+            st.warning("Please select at least one symptom.")
 
 def apply_styles():
     st.markdown(
