@@ -15,13 +15,13 @@ Want to try it yourself? Click the link below:
 ## Key Features
 Swasthya Sathi AI consists of multiple features, each addressing a key aspect of medical diagnostics:
 
-1. **AI-Assisted Images Analysis** – AI-based analysis of medical images.
-2. **Smart Medical Transcriber** – Converts medical prescriptions into structured text in tabular format.
+1. **AI-Assisted Images Analysis** – AI-based analysis of medical images, including a Skin Disease Image Classification Model for detecting and classifying skin conditions using deep learning.
+2. **Smart Prescription Generator** – Converts medical prescriptions into structured text in tabular format.
 3. **AI-Powered Lab Report Analyzer** – Analyzes pathology reports for insights and layman to understand.
 4. **AI Medical Coding** – Suggests ICD medical codes based on medical data.
 5. **Health Risk & Insurance Evaluator** – Evaluates insurance risk based on patient data.
 6. **Personalized Treatment & Diet Planner** – Generates AI-suggested treatment and diet plans based on given information.
-7. **AI-Powered Medical Assistance** – Provides medical guidance and symptom analysis.
+7. **AI-Powered Medical Assistance** – Provides medical guidance and symptom analysis, including a Symptom-Disease-Drug Detection ML Model that predicts diseases based on symptoms and suggests appropriate medications.
 
 ---
 
@@ -53,7 +53,7 @@ GOOGLE_API_KEY=your_google_api_key
 ## Module Breakdown  
 
 ### 1️⃣ **AI-Assisted Image Analysis**  
-📸 Upload medical related images like X-rays and get AI-driven insights, including abnormality detection and diagnostic suggestions.  
+📸 Upload medical related images like X-rays and get AI-driven insights, including abnormality detection and diagnostic suggestions, including skin abnormality detection and diagnostic suggestions using advanced machine learning models.  
 
 ![Medical Imaging Diagnostics](assets/screenshots/medical_imaging.png)
 
@@ -96,9 +96,12 @@ GOOGLE_API_KEY=your_google_api_key
 
 ### 7️⃣ **AI-Powered Medical Assistance**  
 🤖 A smart chatbot for **symptom analysis, medical guidance, and answering healthcare-related queries**.  
-🔬 **Disease Prediction Model** predicts potential diseases based on **user-provided symptoms** using a trained ML model.
 
 ![Medical Assisstant](assets/screenshots/medical_assisstant.png)
+
+🔬 **Disease Prediction Model** predicts potential diseases and suggests medicines based on **user-provided symptoms** using a trained ML model.  
+
+![Disease Predictor](assets/screenshots/disease_predictor.png)
 
 ---
 
@@ -106,7 +109,6 @@ GOOGLE_API_KEY=your_google_api_key
 
 ✅ **Different Downloadable PDF Formats** – Generate reports in various formats tailored for different models.  
 ✅ **Customizable Prompts** – Modify AI prompts for personalized outputs.  
-✅ **Secure Data Handling** – All data remains confidential and secure.  
 ✅ **User-Friendly UI** – Simple and intuitive interface for medical professionals.  
 ✅ **Latest Medical News Updates** – Stay informed with real-time medical news directly on the platform.  
 
@@ -114,9 +116,14 @@ GOOGLE_API_KEY=your_google_api_key
 
 ---
 
+## Data Privacy & Security
+
+**Data Privacy Notice** – Some of the user inputs are processed using Google Gemini API. No personal data is permanently stored within the app. However, users should avoid sharing personally identifiable medical information.  
+We are actively working on enhancing data security measures to further protect user privacy.
+
 ## Future Enhancements
 
-🔹 **Deep Learning-Based Image Diagnosis** – Integrate advanced CNN models for **more accurate** and **automated** medical image analysis.  
+🔹 **Data Security & Confidentiality** – Implement end-to-end encryption, secure cloud storage, and strict access controls to **protect patient data privacy** and ensure **compliance with healthcare regulations**.  
 🔹 **Voice-Based Medical Assistance** – Implement a **voice-enabled AI assistant** for hands-free interaction, making healthcare guidance more accessible.  
 🔹 **Multi-Language Support** – Expand accessibility by **supporting multiple languages** for medical transcription and diagnostics.  
 🔹 **Real-Time Data Integration** – Enable **real-time patient data processing** by integrating with **wearable devices** and **hospital databases**.  
