@@ -5,8 +5,8 @@ import "./FutureEnhancements.css";
 const FutureEnhancements = () => {
   const enhancements = [
     {
-      title: "Deep Learning-Based Image Diagnosis",
-      content: "Advanced CNN models for automated analysis.",
+      title: "Data Security & Confidentiality",
+      content: "End-to-end encryption for secure data transmission.",
     },
     {
       title: "Voice-Based Medical Assistance",
