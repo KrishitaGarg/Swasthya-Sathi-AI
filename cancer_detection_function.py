@@ -2,11 +2,9 @@ import numpy as np
 import tensorflow as tf
 from PIL import Image
 import os
+import gdown
 
-# Load multi-class model
-multi_class_model = tf.keras.models.load_model("cnn_model.h5")
-
-# Class labels with full names
+# Dictionary mapping class labels to full names
 disease_mapping = {
     "MEL": "Melanoma",
     "NV": "Melanocytic Nevi",
@@ -17,8 +15,34 @@ disease_mapping = {
     "VASC": "Vascular Lesions"
 }
 
-# Load all binary classification models
-binary_models = {disease: tf.keras.models.load_model(f"multiple_binary_classifier/{disease}_model.h5") for disease in disease_mapping.keys()}
+# Google Drive file IDs
+drive_ids = {
+    "multi_class_model": "1NQplH8A2WJrGQ4lo8STDTGqurIT7XzPZ",
+    "MEL": "1KuIBRjUg5R26tPCMXdsZAFMvAcOCuUFh",
+    "NV": "1gUQoQwqUXKnQMIJwPyYx8Uc5fNfhirEO",
+    "BCC": "1O9En12uKm54sR0WsWToINXcibuXfKI-j",
+    "AKIEC": "1HtWwLXMevI7gJ6KU-p3oWReBQrLLjpyb",
+    "BKL": "1bCSEUSBrK_928j1UeDKvjd4rwrv39le7",
+    "DF": "1eTqU2hkRGxNfiqhmH1NTi6mWZFsWx3Su",
+    "VASC": "18IQT95KL41DCPbOURoLWI3ReStetz7G5"
+}
+
+# Function to download model if not already present
+def download_model(model_name, file_name):
+    if not os.path.exists(file_name):
+        print(f"Downloading {model_name} model...")
+        gdown.download(f"https://drive.google.com/uc?export=download&id={drive_ids[model_name]}", file_name, quiet=False)
+
+# Download and load multi-class model
+download_model("multi_class_model", "cnn_model.h5")
+multi_class_model = tf.keras.models.load_model("cnn_model.h5")
+
+# Download and load binary classification models
+binary_models = {}
+for disease in disease_mapping.keys():
+    file_name = f"{disease}_model.h5"
+    download_model(disease, file_name)
+    binary_models[disease] = tf.keras.models.load_model(file_name)
 
 def predict_image(uploaded_file):
     # Convert uploaded file to a NumPy array
