@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 const featuresList = [
   {
-    title: "AI-Assisted Imaging",
+    title: "AI-Assisted Image Analysis",
     description:
       "Leverages AI to analyze medical images with precision and speed.",
   },
