@@ -5,3 +5,4 @@ data/images/
 data/masks/
 *.h5
 multiple_binary_classifier/*.h5
+patients.db
