@@ -17,3 +17,6 @@ seaborn
 tensorflow
 opencv-python
 gdown
+streamlit-aggrid
+datetime
+sqlite3
